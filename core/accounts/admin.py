@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User
+from .models import Profile, User
 from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
@@ -7,8 +7,8 @@ from django.contrib.auth.admin import UserAdmin
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ('email', 'first_name', 'is_staff', 'is_active', 'is_superuser')
-    list_filter = ('email', 'first_name', 'is_staff', 'is_active', 'is_superuser')
+    list_display = ('email', 'is_staff', 'is_active', 'is_superuser')
+    list_filter = ('email', 'is_staff', 'is_active', 'is_superuser')
         
     fieldsets = (
         ('authentication', {'fields': ('email', 'first_name', 'password')}),
@@ -21,8 +21,11 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'password1', 'password2', 'is_staff', 'is_superuser', 'is_active')}
+            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_superuser', 'is_active')}
          ),
     )
     search_fields = ('email',)
     ordering = ('email',)
+    
+
+admin.site.register(Profile)

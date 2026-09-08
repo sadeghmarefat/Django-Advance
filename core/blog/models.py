@@ -1,6 +1,7 @@
 from django.db import models
-from accounts.models import User
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class Post(models.Model):
     '''Model representing a blog post.'''
@@ -9,7 +10,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     status = models.BooleanField(default=False)
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     published_at = models.DateTimeField()
@@ -26,3 +27,5 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
