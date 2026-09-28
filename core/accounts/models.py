@@ -8,18 +8,18 @@ from django.dispatch import receiver
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, first_name, password=None, **extra_fields):
+    def create_user(self, email, password=None, **extra_fields):
         '''Creates and saves a new user'''
         if not email:
             raise ValueError('Users must have an email address')
         email = self.normalize_email(email)
-        user = self.model(email=self.normalize_email(email), first_name=first_name, **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
 
         return user
 
-    def create_superuser(self, email, first_name, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         '''Creates and saves a new superuser'''
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
@@ -30,19 +30,20 @@ class UserManager(BaseUserManager):
         if not extra_fields.get('is_superuser'):
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self.create_user(email, first_name, password, **extra_fields)
+        return self.create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
     '''Custom user model that uses email as the
     unique identifier instead of username.'''
     email = models.EmailField(max_length=255, unique=True)
+    first_name = models.CharField(max_length=255)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     # is_verified = models.BooleanField(default=False)
     objects = UserManager()
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['first_name']
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -54,8 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Profile(models.Model):
     '''Model representing a user profile.'''
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=30)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     last_name = models.CharField(max_length=30)
     bio = models.TextField(blank=True)
     profile_picture = models.ImageField(blank=True, null=True)
