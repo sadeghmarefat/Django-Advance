@@ -1,5 +1,8 @@
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView, RedirectView, ListView
+from django.views.generic import TemplateView, RedirectView, ListView, DetailView
+from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
+from .forms import ContactForm, CreateForm
 from .models import Post
 # Create your views here.
 
@@ -24,7 +27,7 @@ class RedirectToIndex(RedirectView):
     pattern_name='blog:cbv_index'
 
 
-class PostList(ListView):
+class PostListView(ListView):
     model = Post
     # queryset = Post.objects.all()
     template_name = 'blog/post_list.html'
@@ -36,3 +39,38 @@ class PostList(ListView):
         return  qs.filter(status=True).order_by('-created_at')
 
 
+class PostDetailView(DetailView):
+    model = Post
+
+
+class ContactView(FormView):
+    template_name = "contact.html"
+    form_class = ContactForm
+    success_url = "/blog/posts"
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        form.save()
+        return super().form_valid(form)
+
+
+class CreatePostView(CreateView):
+    model = Post
+    form_class = CreateForm
+    success_url = '/blog/posts/'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+class PostEditView(UpdateView):
+    model = Post
+    form_class = CreateForm
+    success_url = '/blog/posts'
+
+
+class PostDeleteView(DeleteView):
+    model = Post
+    success_url = '/blog/posts'

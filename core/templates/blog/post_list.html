@@ -6,7 +6,13 @@
 </head>
 <body>
 {% for post in posts %}
-<h2>{{ post.title }}</h2>
+<a href="{% url 'blog:post-detail' pk=post.id %}"><h2>{{ post.title }} {{ post.id }}</h2></a>
+    <a href="{% url 'blog:edit-post' pk=post.id %}">
+        <h5>Edit</h5>
+    </a>
+    <a href="{% url 'blog:delete-post' pk=post.id %}">
+        <h5>Delete</h5>
+    </a>
 <p>{{ post.author }} {{ post.created_at }}</p>
 
 {% endfor %}

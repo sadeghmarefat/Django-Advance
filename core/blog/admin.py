@@ -1,7 +1,8 @@
 from typing import Any
 
 from django.contrib import admin
-from .models import Post
+from .models import Post, Contact
+
 
 # Register your models here.
 
@@ -27,3 +28,10 @@ class PostAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(author=request.user)
+
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ('name', 'message')
+    list_filter = ('name',)
+    search_fields = ('name',)

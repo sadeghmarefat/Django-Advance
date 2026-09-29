@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>create post</title>
 </head>
 <body>
-$END$
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit", value="create post">
+    </form>
 </body>
 </html>
