@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView, RedirectView, ListView, DetailView
@@ -27,7 +28,7 @@ class RedirectToIndex(RedirectView):
     pattern_name='blog:cbv_index'
 
 
-class PostListView(ListView):
+class PostListView(LoginRequiredMixin,ListView):
     model = Post
     # queryset = Post.objects.all()
     template_name = 'blog/post_list.html'
@@ -39,7 +40,7 @@ class PostListView(ListView):
         return  qs.filter(status=True).order_by('-created_at')
 
 
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin,DetailView):
     model = Post
 
 
@@ -55,7 +56,7 @@ class ContactView(FormView):
         return super().form_valid(form)
 
 
-class CreatePostView(CreateView):
+class CreatePostView(LoginRequiredMixin,CreateView):
     model = Post
     form_class = CreateForm
     success_url = '/blog/posts/'
@@ -65,12 +66,12 @@ class CreatePostView(CreateView):
         return super().form_valid(form)
 
 
-class PostEditView(UpdateView):
+class PostEditView(LoginRequiredMixin,UpdateView):
     model = Post
     form_class = CreateForm
     success_url = '/blog/posts'
 
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin,DeleteView):
     model = Post
     success_url = '/blog/posts'
