@@ -13,7 +13,7 @@
     <a href="{% url 'blog:delete-post' pk=post.id %}">
         <h5>Delete</h5>
     </a>
-<p>{{ post.author }} {{ post.created_at }}</p>
+<p>{{ post.author.first_name }} {{ post.created_at }}</p>
 
 {% endfor %}
 <div class="pagination">
