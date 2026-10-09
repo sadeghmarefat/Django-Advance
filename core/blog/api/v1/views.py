@@ -9,6 +9,11 @@ from ...models import Post,Category
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from .peromissions import IsOwnerOrReadOnly
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter,OrderingFilter
+from .paginations import CustomPagination
+
 
 '''
 @api_view(['GET','POST'])
@@ -92,13 +97,13 @@ class PostDetail(APIView):
 '''
 
 class PostDetail(RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
 
 
 class PostViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
 
@@ -126,9 +131,15 @@ class PostViewSet(viewsets.ViewSet):
 
 
 class PostModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    ordering_fields = ['created_at','updated_at']
+    search_fields = ['title','content']
+    filterset_fields = {'category':['exact','in'],'author':['exact']}
+    pagination_class = CustomPagination
+
 
 
 class CategoryModelViewSet(viewsets.ModelViewSet):
