@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin)
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-# Create your models here.
 
 
 class UserManager(BaseUserManager):
@@ -32,6 +28,7 @@ class UserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     '''Custom user model that uses email as the
     unique identifier instead of username.'''
@@ -50,23 +47,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-    
-    
-class Profile(models.Model):
-    '''Model representing a user profile.'''
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    last_name = models.CharField(max_length=30)
-    bio = models.TextField(blank=True)
-    profile_picture = models.ImageField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.user.email
-
-
-@receiver(post_save, sender=User)
-def save_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
