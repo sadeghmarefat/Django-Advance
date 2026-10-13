@@ -161,3 +161,5 @@ class ReSendActivationView(generics.GenericAPIView):
         return Response(
             {"detail": "Activation email sent successfully."}, status=status.HTTP_200_OK
         )
+
+
