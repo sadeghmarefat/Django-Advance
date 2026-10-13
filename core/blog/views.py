@@ -5,6 +5,7 @@ from django.views.generic import TemplateView, RedirectView, ListView, DetailVie
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from .forms import ContactForm, CreateForm
 from .models import Post
+
 # Create your views here.
 
 # function based views
@@ -14,33 +15,34 @@ from .models import Post
 #     return render(request, 'index.html', context)
 #
 
+
 class IndexView(TemplateView):
-    template_name = 'index.html'
+    template_name = "index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['name'] = 'Sadegh'
-        context['posts'] = Post.objects.all()
+        context["name"] = "Sadegh"
+        context["posts"] = Post.objects.all()
         return context
 
 
 class RedirectToIndex(RedirectView):
-    pattern_name='blog:cbv_index'
+    pattern_name = "blog:cbv_index"
 
 
-class PostListView(LoginRequiredMixin,ListView):
+class PostListView(LoginRequiredMixin, ListView):
     model = Post
     # queryset = Post.objects.all()
-    template_name = 'blog/post_list.html'
-    context_object_name = 'posts'
+    template_name = "blog/post_list.html"
+    context_object_name = "posts"
     paginate_by = 2
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return  qs.filter(status=True).order_by('-created_at')
+        return qs.filter(status=True).order_by("-created_at")
 
 
-class PostDetailView(LoginRequiredMixin,DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
 
 
@@ -56,22 +58,22 @@ class ContactView(FormView):
         return super().form_valid(form)
 
 
-class CreatePostView(LoginRequiredMixin,CreateView):
+class CreatePostView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = CreateForm
-    success_url = '/blog/posts/'
+    success_url = "/blog/posts/"
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
 
-class PostEditView(LoginRequiredMixin,UpdateView):
+class PostEditView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = CreateForm
-    success_url = '/blog/posts'
+    success_url = "/blog/posts"
 
 
-class PostDeleteView(LoginRequiredMixin,DeleteView):
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    success_url = '/blog/posts'
+    success_url = "/blog/posts"

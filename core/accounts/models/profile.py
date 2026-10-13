@@ -6,7 +6,7 @@ from .user import User
 
 
 class Profile(models.Model):
-    '''Model representing a user profile.'''
+    """Model representing a user profile."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     last_name = models.CharField(max_length=30)

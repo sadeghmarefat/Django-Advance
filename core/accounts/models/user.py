@@ -1,13 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser, PermissionsMixin)
+    BaseUserManager,
+    AbstractBaseUser,
+    PermissionsMixin,
+)
 
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
-        '''Creates and saves a new user'''
+        """Creates and saves a new user"""
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError("Users must have an email address")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -16,23 +19,24 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        '''Creates and saves a new superuser'''
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_active', True)
-        extra_fields.setdefault('is_verified', True)
+        """Creates and saves a new superuser"""
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
+        extra_fields.setdefault("is_verified", True)
 
-        if not extra_fields.get('is_staff'):
-            raise ValueError('Superuser must have is_staff=True.')
-        if not extra_fields.get('is_superuser'):
-            raise ValueError('Superuser must have is_superuser=True.')
+        if not extra_fields.get("is_staff"):
+            raise ValueError("Superuser must have is_staff=True.")
+        if not extra_fields.get("is_superuser"):
+            raise ValueError("Superuser must have is_superuser=True.")
 
         return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    '''Custom user model that uses email as the
-    unique identifier instead of username.'''
+    """Custom user model that uses email as the
+    unique identifier instead of username."""
+
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     is_staff = models.BooleanField(default=False)
@@ -40,8 +44,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     objects = UserManager()
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name"]
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
