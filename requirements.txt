@@ -36,3 +36,5 @@ tomlkit==0.15.1
 types-PyYAML==6.0.12.20260906
 typing_extensions==4.16.0
 uritemplate==4.2.0
+pytest==8.3.5
+pytest-django==4.11.1
